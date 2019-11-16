@@ -8,81 +8,94 @@ class CurrentDirectory extends React.Component {
     super(props);
     this.state = {
       docType: "folder",
-      docName : "",
-      updatedCurrentLevelDocs: this.props.currentLevelDocs
+      docName: "",
+
     };
- 
+
   }
 
   handleSelectChange = (event) => {
-    this.setState({docType: event.target.value});
+    this.setState({ docType: event.target.value });
   }
   handleSubmit = (event) => {
-    let newDoc = 
-    {
-      "title" : this.state.docName,
-      "type" : this.state.docType,
-      "parentId" : this.props.currentDirectory._id
-     
+    let docExist = this.props.currentLevelDocs.find(
+      (doc, index) =>
+        doc.title == this.state.docName && doc.type == this.state.docType
+    )
+    if (!docExist) {
+      let newDoc =
+      {
+        "title": this.state.docName,
+        "type": this.state.docType,
+        "parentId": this.props.currentDirectory._id
+      }
+      axios.post('http://localhost:8080/api/document', newDoc).then((res) => {
+        let docs = this.props.currentLevelDocs;
+        docs.push(res.data);
+        this.props.afterCreateNewItem(res.data,this.props.currentDirectory)
+        //this.setState({})
+      })
+
 
     }
-    axios.post('http://localhost:8080/api/document',newDoc).then( (res) => {
-       let docs = this.props.currentLevelDocs;
-       docs.push(res.data);
-       this.setState({updatedCurrentLevelDocs : docs})
-    })
+    else {
+      alert("the item with given name already exist");
+    }
+
+
     event.preventDefault();
   }
   handleInputChange = (event) => {
-    this.setState({docName: event.target.value});
+    this.setState({ docName: event.target.value });
   }
 
 
-    renderUserDocument(doc) {
-        return (
-         
-          <DocumentAction
-            value={doc.title}
-            onClick={() => this.props.onClick(doc)}
-            currentDoc = {doc}
-          />
-        );
-      }
+  renderUserDocument(doc) {
+    return (
+
+      <DocumentAction
+        value={doc.title}
+        onClick={() => this.props.onClick(doc)}
+        currentDoc={doc}
+      />
+    );
+  }
   render() {
     return (
-    
+
       <div>
-          <ul>
-            {
-                this.props.currentLevelDocs.map((doc, index)=>
-                  this.renderUserDocument(doc))
-                  
-            }
+        <ul>
+          {this.props.currentLevelDocs.map((doc, index) =>this.renderUserDocument(doc))}
         </ul>
-        
-        <div>
-        <form onSubmit={this.handleSubmit}>
-        <label>
-          Doc/Folder Name:
-          <input
-            name="fileName"
-            type="text"
-            onChange={this.handleInputChange} />
-        </label>
 
-          <select value={this.state.docType} onChange={this.handleSelectChange}>
-              <option value="folder">folder</option>
-              <option value="document">document</option>
-          </select>
-        
-        <input type="submit" value="Create" />
-      </form>
+        {
+          !this.props.isInitialLoad ?
+            <div>
+              <form onSubmit={this.handleSubmit}>
+                  <label>
+                    Doc/Folder Name:
+                <input
+                      name="fileName"
+                      type="text"
+                      required
+                      onChange={this.handleInputChange} />
+                  </label>
 
-        </div>
-   
-    </div>
-   
-     
+                  <select value={this.state.docType} onChange={this.handleSelectChange}>
+                    <option value="folder">folder</option>
+                    <option value="document">document</option>
+                  </select>
+
+                  <input type="submit" value="Create" />
+              </form>
+
+            </div> : ""
+        }
+
+
+      </div>
+
+
     );
   }
 

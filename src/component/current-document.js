@@ -19,11 +19,12 @@ class CurrentDcoument extends React.Component {
         })
         
     }
-    updateDocumet(doc,data){
-        let url = 'http://localhost:8080/api/document/'+doc._id
-        axios.put(url,{data:data})
+    // updateDocumet(doc,data){
+    //     let url = 'http://localhost:8080/api/document/'+doc._id
+    //     axios.put(url,{data:data}).then(res => {});
 
-    }
+
+    // }
   
   render() {
       console.log(this.props.doc);
@@ -47,7 +48,8 @@ class CurrentDcoument extends React.Component {
             onFocus={ ( event, editor ) => {
             } }
         />
-        <button onClick = {()=>{this.updateDocumet(this.props.doc,docData)} } >save</button>
+        {/* <button onClick = {()=>{this.updateDocumet(this.props.doc,docData)} } >save</button> */}
+        <button onClick = {()=>{this.props.onClick(this.props.doc,docData)} } >save</button>
     </div>
         )
     

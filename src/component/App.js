@@ -5,6 +5,7 @@ import CurrentDirectory from './current-directory';
 import CurrentDcoument from './current-document';
 import { stat } from 'fs';
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -14,7 +15,8 @@ class App extends React.Component {
       currentLevelDocs : [],
       isDoc : false,
       currentDoc : {},
-      currentDirectory : {}
+      currentDirectory : {},
+      isInitialLoad : true
     };
   }
   componentDidMount() {
@@ -61,12 +63,12 @@ class App extends React.Component {
           }
           
     );
-   
-
     }
     this.setState({
       currentLevelDocs: docs,
-      currentDirectory : doc
+      currentDirectory : doc,
+      isDoc : false,
+      isInitialLoad : false
 
     })
 
@@ -75,13 +77,29 @@ class App extends React.Component {
 handleClickDoc(doc){
   console.log("in handleClickDoc");
   this.setState({isDoc : true,currentDoc:doc});
-  
+}
+hadnleClickDocSave(doc,data){
+    let url = 'http://localhost:8080/api/document/'+doc._id
+    axios.put(url,{data:data}).then(res => {});
+    let parentFolder = this.findDocMetadataById(doc.parentId);
+    this.handleClickFolder(parentFolder);
+
+}
+
+handleDocmenuClick(event,data){
+  alert(data.option);
+
+}
+afterCreateNewItem(newDoc,currentDirectory){
+
+  this.state.metaData.push(newDoc);
+  currentDirectory.children.push(newDoc._id);
+  this.handleClickFolder(currentDirectory);
 
 }
 
 
   render() {
-    console.log("dfdfd")
     return (
 
       <div className="app">
@@ -89,14 +107,19 @@ handleClickDoc(doc){
           {this.state.isDoc ?
             <CurrentDcoument
               doc = {this.state.currentDoc}
+              onClick = {(doc,data) => this.hadnleClickDocSave(doc,data)}
             />:
           <CurrentDirectory
-          currentLevelDocs={this.state.currentLevelDocs}
-          currentDirectory = {this.state.currentDirectory}
-          onClick={(doc) =>
-              doc.type == 'folder' ? this.handleClickFolder(doc) : this.handleClickDoc(doc)
-             
-            }
+            currentLevelDocs={this.state.currentLevelDocs}
+            currentDirectory = {this.state.currentDirectory}
+            isInitialLoad = {this.state.isInitialLoad}
+            onClick={(doc) =>
+                doc.type == 'folder' ? this.handleClickFolder(doc) : this.handleClickDoc(doc)
+              
+              }
+              afterCreateNewItem = {(newDoc,currentDirectory) => this.afterCreateNewItem(newDoc,currentDirectory)}
+      
+            
         />
           }
            
