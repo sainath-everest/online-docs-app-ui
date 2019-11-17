@@ -97,8 +97,23 @@ afterCreateNewItem(newDoc,currentDirectory){
   this.handleClickFolder(currentDirectory);
 
 }
+menuClick(event,data){
+  let url = 'http://localhost:8080/api/document/'+data.currentDoc._id
+  if(data.option == "delete"){
+    axios.delete(url).then(res =>{
+      axios.get('http://localhost:8080/api/').then(res => {
+         let updateMetaData = res.data;
+         this.state.metaData = updateMetaData;
+         let parentFolder = this.findDocMetadataById(data.currentDoc.parentId);
+          this.handleClickFolder(parentFolder);  
 
+    });
 
+    }); 
+
+  }
+
+}
   render() {
     return (
 
@@ -118,7 +133,7 @@ afterCreateNewItem(newDoc,currentDirectory){
               
               }
               afterCreateNewItem = {(newDoc,currentDirectory) => this.afterCreateNewItem(newDoc,currentDirectory)}
-      
+              menuClick = {(event,data) => {this.menuClick(event,data)}}
             
         />
           }

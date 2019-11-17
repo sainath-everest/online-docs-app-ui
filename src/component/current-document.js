@@ -19,12 +19,6 @@ class CurrentDcoument extends React.Component {
         })
         
     }
-    // updateDocumet(doc,data){
-    //     let url = 'http://localhost:8080/api/document/'+doc._id
-    //     axios.put(url,{data:data}).then(res => {});
-
-
-    // }
   
   render() {
       console.log(this.props.doc);

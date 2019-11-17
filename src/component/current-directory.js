@@ -56,6 +56,7 @@ class CurrentDirectory extends React.Component {
       <DocumentAction
         value={doc.title}
         onClick={() => this.props.onClick(doc)}
+        menuClick = {this.props.menuClick}
         currentDoc={doc}
       />
     );
