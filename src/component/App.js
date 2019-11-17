@@ -86,10 +86,6 @@ hadnleClickDocSave(doc,data){
 
 }
 
-handleDocmenuClick(event,data){
-  alert(data.option);
-
-}
 afterCreateNewItem(newDoc,currentDirectory){
 
   this.state.metaData.push(newDoc);
@@ -97,7 +93,7 @@ afterCreateNewItem(newDoc,currentDirectory){
   this.handleClickFolder(currentDirectory);
 
 }
-menuClick(event,data){
+handleDocmenuClick(event,data){
   let url = 'http://localhost:8080/api/document/'+data.currentDoc._id
   if(data.option == "delete"){
     axios.delete(url).then(res =>{
@@ -133,7 +129,7 @@ menuClick(event,data){
               
               }
               afterCreateNewItem = {(newDoc,currentDirectory) => this.afterCreateNewItem(newDoc,currentDirectory)}
-              menuClick = {(event,data) => {this.menuClick(event,data)}}
+              menuClick = {(event,data) => {this.handleDocmenuClick(event,data)}}
             
         />
           }
