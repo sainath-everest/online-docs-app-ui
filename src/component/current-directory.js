@@ -76,6 +76,7 @@ class CurrentDirectory extends React.Component {
                   <label>
                     Doc/Folder Name:
                 <input
+                      id = "create-new-doc"
                       name="fileName"
                       type="text"
                       required
@@ -87,7 +88,7 @@ class CurrentDirectory extends React.Component {
                     <option value="document">document</option>
                   </select>
 
-                  <input type="submit" value="Create" />
+                  <input id = "new-doc-submit" type="submit" value="Create" />
               </form>
 
             </div> : ""
